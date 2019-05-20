@@ -46,15 +46,24 @@ class Meta(Frame): pass
 
 class Module(Meta): pass
 
+class Class(Meta): pass
+class Func(Meta): pass
+class Method(Func): pass
+class Var(Meta): pass
+class Field(Var): pass
+
 module      = Module('P')
 dir         = Dir('~/' + module.val)    ; module // dir
 project     = File('.project')          ; dir // project
 pydev       = File('.pydevproject')     ; dir // pydev
 gitignore   = File('.gitignore')        ; dir // gitignore
+makefile    = File('Makefile')          ; dir // makefile
 
 readme      = File('README.md')         ; module // readme  ; readme // module
 title   = String('homoiconic metaPython')                   ; readme // title
-author  = String('Dmitry Ponyatov <<dponyatov@gmail.com>>') ; readme // author      
+author  = String('Dmitry Ponyatov <<dponyatov@gmail.com>>') ; readme // author
+license = String('CC BY-NC-ND')                             ; readme // license
+github  = String('https://github.com/ponyatov/P')           ; readme // github
 
 py          = File('meta.py')           ; module // py
 settings    = Dir('.settings')          ; dir // settings
