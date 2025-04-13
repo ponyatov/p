@@ -2,23 +2,26 @@ import os
 
 dirs = ['.', '.vscode', 'bin', 'doc', 'lib', 'inc', 'src', 'tmp']
 
-for d in dirs: 
+for d in dirs:
     try: os.mkdir(d)
     except FileExistsError: pass
-    with open(f'{d}/.gitignore','w') as giti: print('!.gitignore',file=giti)
+    with open(f'{d}/.gitignore', 'w') as giti:
+        if d in ['bin', 'tmp', 'ref']: print('*', file=giti)
+        print('!.gitignore', file=giti)
 
-files = ['README.md','LICENSE','Makefile','apt.Debian','.clang-format','.doxygen']
+files = ['README.md', 'LICENSE', 'Makefile',
+         'apt.Debian', '.clang-format', '.doxygen']
 
 for f in files:
-    with open(f,'a') as ff: pass
+    with open(f, 'a') as ff: pass
 
-vscode = ['extensions','settings','tasks','launch','c_cpp_properties']
+vscode = ['extensions', 'settings', 'tasks', 'launch', 'c_cpp_properties']
 
 for j in vscode:
-    with open(f'.vscode/{j}.json','a') as jj: pass
+    with open(f'.vscode/{j}.json', 'a') as jj: pass
 
 def settings():
-    with open('.vscode/settings.json','w') as j:
+    with open('.vscode/settings.json', 'w') as j:
         print(r'''{
     // editor
     "files.eol": "\n",
@@ -43,5 +46,5 @@ def settings():
         "editor.defaultFormatter"  : "ms-python.autopep8",
         "editor.formatOnSave"      :  false
     },
-}''',file=j)
+}''', file=j)
 settings()
