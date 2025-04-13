@@ -4,7 +4,7 @@ tokens = ['INT', 'ID']
 t_ignore = '[ \t\r\n]+'
 t_ignore_comment = '\#.*'
 
-def t_error(msg): raise SyntaxError(t)
+def t_error(t): raise SyntaxError(t)
 
 lexer = lex.lex()
 
