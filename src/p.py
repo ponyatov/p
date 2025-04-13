@@ -11,3 +11,8 @@ files = ['README.md','LICENSE','Makefile','apt.Debian','.clang-format','.doxygen
 
 for f in files:
     with open(f,'a') as ff: pass
+
+vscode = ['extensions','settings','tasks','launch','c_cpp_properties']
+
+for j in vscode:
+    with open(f'.vscode/{j}.json','a') as jj: pass
