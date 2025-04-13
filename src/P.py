@@ -38,7 +38,7 @@ D = []
 def push(o): D.append(o)
 
 ## `( o -- )` pop element
-def pop(): ret = D[-1]; D.pop(); return ret
+def pop(idx=-1): ret = D[idx]; D.pop(idx); return ret
 
 ## VM commands
 
@@ -63,10 +63,32 @@ def hex_(): push(Hex(pop().value))
 def oct_(): push(Oct(pop().value))
 def bin_(): push(Bin(pop().value))
 
+## `( n -- n n)`
+def dup():
+    if log: print(dup)
+    push(D[-1])
+
+## `( n1 n2 -- n1 )`
+def drop():
+    if log: print(drop)
+    pop()
+
+## `( n1 n2  -- n2 n1 )`
+def swap():
+    if log: print(swap)
+    push(pop(-2))
+
+## `( n1 n2 -- n1 n2 n1 )`
+def over():
+    if log: print(over)
+    push(D[-2])
+
 ## vocabulary
 
 W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
-     'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_, }
+     'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_,
+     'dup': dup, 'drop': drop, 'swap': swap, 'over': over,
+     }
 
 
 ## lexer
@@ -144,7 +166,7 @@ def REPL():
         quest()
         try: cmd = input('> ')
         except EOFError: halt()
-        Thread(target=parser.parse, args=[cmd]).start() # ignore errors
+        t = Thread(target=parser.parse, args=[cmd]); t.start(); t.join()
 W['REPL'] = REPL
 
 ## command line processing
