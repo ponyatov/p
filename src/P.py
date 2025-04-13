@@ -1,5 +1,26 @@
 import sys
 
+## custom types
+
+class Object: pass
+class Primitive(Object): pass
+
+class Int(Primitive):
+    def __init__(self, V): self.value = int(V, 0x0A)
+    def __repr__(self): return f'{self.value}'
+
+class Hex(Primitive):
+    def __init__(self, V): self.value = int(V, 0x10)
+    def __repr__(self): return f'0x{self.value:x}'
+
+class Oct(Primitive):
+    def __init__(self, V): self.value = int(V, 0x08)
+    def __repr__(self): return f'0o{self.value:o}'
+
+class Bin(Primitive):
+    def __init__(self, V): self.value = int(V, 0x02)
+    def __repr__(self): return f'0b{self.value:b}'
+
 ## Virtual FORTH Machine
 
 ## logging
@@ -40,13 +61,22 @@ W = {'nop': nop, 'halt': halt, '.': dot, '?': quest}
 
 import ply.lex as lex
 
-tokens = ['INT', 'ID']
+tokens = ['INT', 'HEX', 'OCT', 'BIN', 'ID']
 t_ignore = '[ \t\r\n]+'
 t_ignore_comment = '\#.*'
 
+def t_HEX(t):
+    r'0x[0-9a-fA-F]+'
+    t.value = Hex(t.value); return t
+def t_OCT(t):
+    r'0o[0-7]+'
+    t.value = Oct(t.value); return t
+def t_BIN(t):
+    r'0b[01]+'
+    t.value = Bin(t.value); return t
 def t_INT(t):
     r'[+\-]?[0-9]+'
-    t.value = int(t.value); return t
+    t.value = Int(t.value); return t
 
 def t_ID(t):
     r'[^# \t\r\n]+'
@@ -68,8 +98,21 @@ def p_syntax_ex(p):
     pass
 
 def p_ex_int(p):
-    r' ex : INT '
+    r' ex : int '
     push(p[1])
+def p_int_dec(p):
+    r' int : INT '
+    p[0] = p[1]
+def p_int_hex(p):
+    r' int : HEX '
+    p[0] = p[1]
+def p_int_oct(p):
+    r' int : OCT '
+    p[0] = p[1]
+def p_int_bin(p):
+    r' int : BIN '
+    p[0] = p[1]
+
 def p_ex_id(p):
     r' ex : ID '
     W[p[1]]()
@@ -89,7 +132,7 @@ def REPL():
         quest()
         try: cmd = input('> ')
         except EOFError: halt()
-        t = Thread(target=parser.parse, args=[cmd]); t.start(); t.join()
+        Thread(target=parser.parse, args=[cmd]).start() # ignore errors
 W['REPL'] = REPL
 
 ## command line processing
