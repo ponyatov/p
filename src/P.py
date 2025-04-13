@@ -2,11 +2,32 @@ import sys
 
 ## Virtual FORTH Machine
 
+## logging
+log = True
+
 ## data stack
 D = []
 
+## `( -- o )` push element
+def push(o): D.append(o)
+
+## `( o -- )` pop element
+def pop(): ret = D[-1]; D.pop(); return ret
+
+## VM commands
+
+## `( -- )` do nothing
+def nop():
+    if log: print(nop)
+
 ## `( -- )` stop system
-def bye(): sys.exit(0)
+def halt():
+    if log: print(halt); sys.exit(0)
+
+## vocabulary
+
+W = {'nop': nop, 'halt': halt}
+
 
 ## lexer
 
@@ -39,17 +60,17 @@ def p_syntax_none(p):
     pass
 def p_syntax_ex(p):
     r' syntax : syntax ex'
-    print(p[2])
+    pass
 
 def p_ex_char(p):
     r' ex : CHAR '
-    p[0] = f'char: {p[1]}'
+    print(p[1],)
 def p_ex_id(p):
     r' ex : ID '
-    p[0] = f'id: {p[1]}'
+    W[p[1]]()
 def p_ex_int(p):
     r' ex : INT '
-    p[0] = f'int: {p[1]}'
+    push(p[1])
 
 def p_error(p): raise SyntaxError(p)
 
@@ -61,9 +82,11 @@ parser = yacc.yacc(debug=False, write_tables=False)
 import readline
 
 def REPL():
-    print(D)
-    try: parser.parse(input('> '))
-    except EOFError: bye()
+    while True:
+        print(D)
+        try: parser.parse(input('> '))
+        except EOFError: halt()
+W['REPL'] = REPL
 
 ## command line processing
 

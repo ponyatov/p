@@ -32,7 +32,7 @@
             "type"           : "shell",
             "command"        : "python3 ${workspaceFolder}/src/${workspaceFolderBasename}.py ${workspaceFolder}/lib/${workspaceFolderBasename}.ini",
             "problemMatcher" : [],
-            "presentation"   : {"showReuseMessage": false, "focus": true},
+            "presentation"   : {"showReuseMessage": true, "focus": true},
             "group"          : {"kind": "build", "isDefault": true}
         },
     ]
