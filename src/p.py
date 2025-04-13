@@ -16,3 +16,32 @@ vscode = ['extensions','settings','tasks','launch','c_cpp_properties']
 
 for j in vscode:
     with open(f'.vscode/{j}.json','a') as jj: pass
+
+def settings():
+    with open('.vscode/settings.json','w') as j:
+        print(r'''{
+    // editor
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.rulers": [80],
+    "editor.lineNumbers": "on",
+    "workbench.tree.indent": 24,
+    "editor.fontSize": 14,
+    "explorer.autoReveal": false,
+    "git.enabled": false,
+    "terminal.integrated.copyOnSelection": true,
+
+    // Python
+    "python.defaultInterpreterPath":  "python3",
+    "autopep8.path"                : ["autopep8"],
+    "autopep8.args"                : ["--ignore","E26,E302,E305,E401,E402,E701,E702"],
+    "[python]": {
+        "editor.defaultFormatter"  : "ms-python.autopep8",
+        "editor.formatOnSave"      :  false
+    },
+}''',file=j)
+settings()
