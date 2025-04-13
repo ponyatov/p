@@ -1,3 +1,12 @@
+MODULE = 'P'
+TITLE = 'protoShell'
+AUTHOR = 'Dmitry Ponyatov'
+EMAIL = 'dponyatov@gmail.com'
+LICENSE = 'MIT'
+
+import datetime as dt
+YEAR = dt.date.today().strftime('%Y')
+
 import os
 
 dirs = ['.', '.vscode', 'bin', 'doc', 'lib', 'inc', 'src', 'tmp']
@@ -48,3 +57,14 @@ def settings():
     },
 }''', file=j)
 settings()
+
+def readme():
+    with open('README.md', 'w') as md:
+        print(f'''# `{MODULE}`
+## {TITLE}
+
+(c) {AUTHOR} <<{EMAIL}>> {YEAR} {LICENSE}
+
+github: https://github.com/ponyatov/{MODULE}''', file=md)
+
+readme()
