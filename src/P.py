@@ -24,16 +24,23 @@ def nop():
 def halt():
     if log: print(halt); sys.exit(0)
 
+## `( ... -- )` clean stack
+def dot():
+    if log: print(dot); D = []
+
+## `( -- )` print stack
+def quest(): print(D)
+
 ## vocabulary
 
-W = {'nop': nop, 'halt': halt}
+W = {'nop': nop, 'halt': halt, '.': dot, '?': quest}
 
 
 ## lexer
 
 import ply.lex as lex
 
-tokens = ['INT', 'ID', 'CHAR']
+tokens = ['INT', 'ID']
 t_ignore = '[ \t\r\n]+'
 t_ignore_comment = '\#.*'
 
@@ -42,10 +49,8 @@ def t_INT(t):
     t.value = int(t.value); return t
 
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    r'[^# \t\r\n]+'
     return t
-
-t_CHAR = '.'
 
 def t_error(t): raise SyntaxError(t)
 
@@ -62,15 +67,12 @@ def p_syntax_ex(p):
     r' syntax : syntax ex'
     pass
 
-def p_ex_char(p):
-    r' ex : CHAR '
-    print(p[1],)
-def p_ex_id(p):
-    r' ex : ID '
-    W[p[1]]()
 def p_ex_int(p):
     r' ex : INT '
     push(p[1])
+def p_ex_id(p):
+    r' ex : ID '
+    W[p[1]]()
 
 def p_error(p): raise SyntaxError(p)
 
@@ -80,12 +82,14 @@ parser = yacc.yacc(debug=False, write_tables=False)
 ## Read-Eval-Print-Loop
 
 import readline
+from threading import Thread
 
 def REPL():
     while True:
-        print(D)
-        try: parser.parse(input('> '))
+        quest()
+        try: cmd = input('> ')
         except EOFError: halt()
+        t = Thread(target=parser.parse, args=[cmd]); t.start(); t.join()
 W['REPL'] = REPL
 
 ## command line processing
