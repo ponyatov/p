@@ -29,7 +29,7 @@ class Bin(Primitive):
 ## symbol
 class Sym(Primitive):
     def __init__(self, V): self.value = V
-    def __repr__(self): return f'${self.value}'
+    def __repr__(self): return f'`{self.value}'
 
 ## Virtual FORTH Machine
 
@@ -68,6 +68,8 @@ def hex_(): push(Hex(pop().value))
 def oct_(): push(Oct(pop().value))
 def bin_(): push(Bin(pop().value))
 
+## stack operations
+
 ## `( n -- n n)`
 def dup():
     if log: print(dup)
@@ -90,9 +92,18 @@ def over():
 
 ## vocabulary
 
+def find():
+    if log: print(find)
+    key = pop()
+    match key:
+        case str(k): push(W[k])
+        case k if isinstance(k, Sym): push(W[k.value])
+        case _: raise TypeError(type(key), key)
+
 W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
      'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_,
      'dup': dup, 'drop': drop, 'swap': swap, 'over': over,
+     'find': find
      }
 
 
@@ -100,7 +111,7 @@ W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
 
 import ply.lex as lex
 
-tokens = ['INT', 'HEX', 'OCT', 'BIN', 'ID']
+tokens = ['INT', 'HEX', 'OCT', 'BIN', 'STR', 'SYM', 'ID']
 t_ignore = '[ \t\r\n]+'
 t_ignore_comment = '\#.*'
 
@@ -117,6 +128,13 @@ def t_INT(t):
     r'[+\-]?[0-9]+'
     t.value = Int(t.value); return t
 
+def t_STR(t):
+    r'\'.*\''
+    t.value = t.value[1:-1]; return t
+
+def t_SYM(t):
+    r'`[^# \t\r\n]+'
+    t.value = Sym(t.value[1:]); return t
 def t_ID(t):
     r'[^# \t\r\n]+'
     return t
@@ -152,6 +170,13 @@ def p_int_bin(p):
     r' int : BIN '
     p[0] = p[1]
 
+def p_ex_str(p):
+    r' ex : STR '
+    push(p[1])
+
+def p_ex_sym(p):
+    r' ex : SYM '
+    push(p[1])
 def p_ex_id(p):
     r' ex : ID '
     W[p[1]]()
