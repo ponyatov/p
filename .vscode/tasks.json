@@ -1,3 +1,39 @@
 {
-    
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label"          : "project: install",
+            "type"           : "shell",
+            "command"        : "make install",
+            "presentation"   : {"focus": true},
+            "problemMatcher" : []
+        },
+        {
+            "label"          : "project: update",
+            "type"           : "shell",
+            "command"        : "make update",
+            "presentation"   : {"focus": true},
+            "problemMatcher" : []
+        },
+        {
+            "label"          : "git: whoami",
+            "type"           : "shell",
+            "command"        : "make `whoami`",
+            "problemMatcher" : []
+        },
+        {
+            "label"          : "git: dev",
+            "type"           : "shell",
+            "command"        : "make dev",
+            "problemMatcher" : []
+        },
+        {
+            "label"          : "python: run",
+            "type"           : "shell",
+            "command"        : "python3 ${file}",
+            "problemMatcher" : [],
+            "presentation"   : {"showReuseMessage": false, "focus": false, "reveal": "silent"},
+            "group"          : {"kind": "build","isDefault": true}
+        },
+    ]
 }
