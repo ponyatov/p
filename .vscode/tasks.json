@@ -30,10 +30,10 @@
         {
             "label"          : "python: run",
             "type"           : "shell",
-            "command"        : "python3 ${file}",
+            "command"        : "python3 ${workspaceFolder}/src/${workspaceFolderBasename}.py ${workspaceFolder}/lib/${workspaceFolderBasename}.ini",
             "problemMatcher" : [],
             "presentation"   : {"showReuseMessage": false, "focus": true},
-            "group"          : {"kind": "build","isDefault": true}
+            "group"          : {"kind": "build", "isDefault": true}
         },
     ]
 }
