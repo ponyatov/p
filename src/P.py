@@ -3,22 +3,27 @@ import sys
 ## custom types
 
 class Object: pass
-class Primitive(Object): pass
+class Primitive(Object):
+    def __init__(self, V, base=0x0A):
+        match V:
+            case int(V): self.value = V
+            case str(V): self.value = int(V, base)
+            case _: raise TypeError(V)
 
 class Int(Primitive):
-    def __init__(self, V): self.value = int(V, 0x0A)
+    def __init__(self, V): super().__init__(V, 0x0A)
     def __repr__(self): return f'{self.value}'
 
 class Hex(Primitive):
-    def __init__(self, V): self.value = int(V, 0x10)
+    def __init__(self, V): super().__init__(V, 0x10)
     def __repr__(self): return f'0x{self.value:x}'
 
 class Oct(Primitive):
-    def __init__(self, V): self.value = int(V, 0x08)
+    def __init__(self, V): super().__init__(V, 0x08)
     def __repr__(self): return f'0o{self.value:o}'
 
 class Bin(Primitive):
-    def __init__(self, V): self.value = int(V, 0x02)
+    def __init__(self, V): super().__init__(V, 0x02)
     def __repr__(self): return f'0b{self.value:b}'
 
 ## Virtual FORTH Machine
@@ -47,14 +52,21 @@ def halt():
 
 ## `( ... -- )` clean stack
 def dot():
-    if log: print(dot); D = []
+    if log: print(dot); D.clear()
 
 ## `( -- )` print stack
 def quest(): print(D)
 
+## `( hex -- dec )` convert to decimal int
+def int_(): push(Int(pop().value))
+def hex_(): push(Hex(pop().value))
+def oct_(): push(Oct(pop().value))
+def bin_(): push(Bin(pop().value))
+
 ## vocabulary
 
-W = {'nop': nop, 'halt': halt, '.': dot, '?': quest}
+W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
+     'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_, }
 
 
 ## lexer
