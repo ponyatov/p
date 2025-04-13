@@ -26,6 +26,11 @@ class Bin(Primitive):
     def __init__(self, V): super().__init__(V, 0x02)
     def __repr__(self): return f'0b{self.value:b}'
 
+## symbol
+class Sym(Primitive):
+    def __init__(self, V): self.value = V
+    def __repr__(self): return f'${self.value}'
+
 ## Virtual FORTH Machine
 
 ## logging
