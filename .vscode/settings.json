@@ -14,6 +14,42 @@
     "git.enabled": false,
     "terminal.integrated.copyOnSelection": true,
 
+    // JS
+    "prettier.requireConfig"      :  true,
+    "prettier.configPath"         : ".prettierrc",
+    "json.format.enable"          :  true,
+
+    // clang-format
+    "clang-format.executable"     : "clang-format",
+    "clang-format.fallbackStyle"  : "Google",
+    "clang-format.style"          : "file",
+
+    // C++
+    "[c]": {
+        "editor.defaultFormatter" : "xaver.clang-format",
+        "editor.formatOnSave"     :  false
+    },
+    "[cpp]": {
+        "editor.defaultFormatter" : "xaver.clang-format",
+        "editor.formatOnSave"     :  false
+    },
+    // "C_Cpp.intelliSenseEngine": "Tag Parser",
+    // "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+
+    // CMake
+    "cmake.sourceDirectory" : "${workspaceFolder}",
+    "cmake.buildDirectory"  : "${workspaceFolder}/tmp/${workspaceFolderBasename}",
+    "cmake.generator"       : "Unix Makefiles",
+    "cmake.parallelJobs"    :  4,
+    "cmake.useCMakePresets" : "always",
+    "cmake.buildBeforeRun"  :  true,
+    "cmake.saveBeforeBuild" :  true,
+    "cmake.debugConfig"     : {
+        "cwd" :   "${workspaceFolder}",
+        "args": [ "lib/${workspaceFolderBasename}.ini" ] },
+    "cmake.allowCommentsInPresetsFile" : true,
+    "cmake.ignoreCMakeListsMissing"    : true,
+
     // Python
     "python.defaultInterpreterPath":  "python3",
     "autopep8.path"                : ["autopep8"],
@@ -22,4 +58,15 @@
         "editor.defaultFormatter"  : "ms-python.autopep8",
         "editor.formatOnSave"      :  false
     },
+
+    // MinGW/MSYS2
+    "terminal.integrated.defaultProfile.windows": "UCRT64",
+    "terminal.integrated.profiles.windows": {
+      "UCRT64": {
+        "path": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": ["--login","-i"],
+        "env": {
+          "MSYSTEM": "UCRT64",
+          "CHERE_INVOKING": "1",
+        }}},
 }
