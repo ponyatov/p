@@ -5,6 +5,7 @@ import sys
 class Object:
     def __init__(self, V): self.value = V
     def tag(self): return self.__class__.__name__.lowe()
+    def val(self): return f'{self.value}'
 
 class Primitive(Object):
     def __init__(self, V, base=0x0A):
@@ -34,6 +35,17 @@ class Sym(Primitive):
     def __init__(self, V): self.value = V
     def __repr__(self): return f'`{self.value}'
 
+## compiled sequence
+class Seq(Object):
+    def __init__(self, name=None):
+        self.name = name; self.value = []
+
+    def __repr__(self):
+        name = self.name if self.name is not None else ''
+        return f'{name}{{{self.val()[1:-1]}}}'
+
+    def __floordiv__(self, o): self.value.append(o); return self
+
 class IO(Object):
     def __init__(self, path): self.path = path
     def __repr__(self): f'{self.tag()}:{self.path}'
@@ -48,6 +60,9 @@ log = True
 
 ## data stack
 D = []
+
+## compile register
+C = None
 
 ## `( -- o )` push element
 def push(o): D.append(o)
@@ -70,7 +85,7 @@ def dot():
     if log: print(dot); D.clear()
 
 ## `( -- )` print stack
-def quest(): print(D)
+def quest(): print(f'D:{D} C:{C}')
 
 ## `( hex -- dec )` convert to decimal int
 def int_(): push(Int(pop().value))
@@ -100,6 +115,11 @@ def over():
     if log: print(over)
     push(D[-2])
 
+## `( n1 h2 n3 -- n1 n3 )`
+def press():
+    if log: print(press)
+    pop(-2)
+
 ## vocabulary
 
 def find():
@@ -112,7 +132,7 @@ def find():
 
 W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
      'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_,
-     'dup': dup, 'drop': drop, 'swap': swap, 'over': over,
+     'dup': dup, 'drop': drop, 'swap': swap, 'over': over, 'press': press,
      'find': find,
      'dir': lambda: push(Dir(pop()))
      }
@@ -122,9 +142,16 @@ W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
 
 import ply.lex as lex
 
-tokens = ['INT', 'HEX', 'OCT', 'BIN', 'STR', 'SYM', 'ID']
+tokens = ['INT', 'HEX', 'OCT', 'BIN', 'STR', 'SYM', 'ID', 'LC', 'RC']
 t_ignore = '[ \t\r\n]+'
 t_ignore_comment = '\#.*'
+
+def t_LC(t):
+    r'{'
+    return t
+def t_RC(t):
+    r'}'
+    return t
 
 def t_HEX(t):
     r'0x[0-9a-fA-F]+'
@@ -147,7 +174,7 @@ def t_SYM(t):
     r'`[^# \t\r\n]+'
     t.value = Sym(t.value[1:]); return t
 def t_ID(t):
-    r'[^# \t\r\n]+'
+    r'[^# \t\r\n{}]+'
     return t
 
 def t_error(t): raise SyntaxError(t)
@@ -167,7 +194,8 @@ def p_syntax_ex(p):
 
 def p_ex_int(p):
     r' ex : int '
-    push(p[1])
+    if C: C // p[1]
+    else: push(p[1])
 def p_int_dec(p):
     r' int : INT '
     p[0] = p[1]
@@ -190,7 +218,18 @@ def p_ex_sym(p):
     push(p[1])
 def p_ex_id(p):
     r' ex : ID '
-    W[p[1]]()
+    found = W[p[1]]
+    if C: C // found
+    else: found() # exec
+
+def p_ex_lc(p):
+    r' ex : LC '
+    global C; assert not C
+    C = Seq()
+def p_ex_rc(p):
+    r' ex : RC '
+    global C; assert C
+    push(C); C = None
 
 def p_error(p): raise SyntaxError(p)
 
@@ -205,7 +244,8 @@ from threading import Thread
 def REPL():
     while True:
         quest()
-        try: cmd = input('> ')
+        ps = ': ' if C else '> '
+        try: cmd = input(ps)
         except EOFError: halt()
         except KeyboardInterrupt: print()
         else:
