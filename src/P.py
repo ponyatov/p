@@ -2,7 +2,10 @@ import sys
 
 ## custom types
 
-class Object: pass
+class Object:
+    def __init__(self, V): self.value = V
+    def tag(self): return self.__class__.__name__.lowe()
+
 class Primitive(Object):
     def __init__(self, V, base=0x0A):
         match V:
@@ -30,6 +33,13 @@ class Bin(Primitive):
 class Sym(Primitive):
     def __init__(self, V): self.value = V
     def __repr__(self): return f'`{self.value}'
+
+class IO(Object):
+    def __init__(self, path): self.path = path
+    def __repr__(self): f'{self.tag()}:{self.path}'
+
+class Dir(IO): pass
+class File(IO): pass
 
 ## Virtual FORTH Machine
 
@@ -103,7 +113,8 @@ def find():
 W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
      'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_,
      'dup': dup, 'drop': drop, 'swap': swap, 'over': over,
-     'find': find
+     'find': find,
+     'dir': lambda: push(Dir(pop()))
      }
 
 
@@ -196,7 +207,9 @@ def REPL():
         quest()
         try: cmd = input('> ')
         except EOFError: halt()
-        t = Thread(target=parser.parse, args=[cmd]); t.start(); t.join()
+        except KeyboardInterrupt: print()
+        else:
+            t = Thread(target=parser.parse, args=[cmd]); t.start(); t.join()
 W['REPL'] = REPL
 
 ## command line processing
