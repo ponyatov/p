@@ -1,4 +1,21 @@
 {
+    // files
+    "files.exclude": {
+        "doc/html/**": true,
+        "bin/py*": true, "bin/pip*": true,
+        "bin/?ctivate*": true, "bin/autopep*": true,
+        "lib/python*": true, "lib64":true, "include":true,
+    },
+    "files.watcherExclude": {
+        "ref/**": true, "target/**": true,
+    },
+    "files.associations": {
+        "*.mk": "makefile",
+        "*.ocd": "properties", "*.gdb*": "properties",
+        "*.ld": "linkerscript", "*.ld.fix": "linkerscript",
+        "*.ioc": "properties", "*.config": "properties",
+    },
+
     // editor
     "files.eol": "\n",
     "files.insertFinalNewline": true,
