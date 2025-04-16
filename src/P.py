@@ -133,7 +133,7 @@ def find():
 W = {'nop': nop, 'halt': halt, '.': dot, '?': quest,
      'int': int_, 'hex': hex_, 'oct': oct_, 'bin': bin_,
      'dup': dup, 'drop': drop, 'swap': swap, 'over': over, 'press': press,
-     'find': find,
+     'find': find, 'W': lambda: print(W),
      'dir': lambda: push(Dir(pop()))
      }
 
@@ -238,7 +238,13 @@ parser = yacc.yacc(debug=False, write_tables=False)
 
 ## Read-Eval-Print-Loop
 
+def complete(text, state):
+    keys = [x for x in W.keys() if x.startswith(text)] + [None]
+    return keys[state]
+
 import readline
+readline.parse_and_bind("tab: complete")
+readline.set_completer(complete)
 from threading import Thread
 
 def REPL():
