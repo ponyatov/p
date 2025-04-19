@@ -34,8 +34,22 @@ Object::~Object() {}
 
 Object::Object(string V) : Object() { value = V; }
 
+#include <cxxabi.h>
+
+string Object::tag() {
+    string ret = abi::__cxa_demangle(typeid(*this).name(), NULL, NULL, nullptr);
+    for (char &c : ret) c = tolower(c);
+    return ret;
+}
+
+string Object::dump() {
+    ostringstream os;
+    os << tag() << ':' << val();
+    return os.str();
+}
+
 Int::Int(string V) : Object() { value = atoi(V.c_str()); }
-string Int::dump() { return to_string(value); }
+string Int::val() { return to_string(value); }
 
 Sym::Sym(string V) : Object(V) {}
 
@@ -55,8 +69,7 @@ Object *pop() {
 void quest() {
     ostringstream os;
     os << "\n[ ";
-    printf("\n[ ");
-    for (int i = 0; i < Dp; i++) printf("%s ", D[i]->dump().c_str());
+    for (int i = 0; i < Dp; i++) os << D[i]->dump() << ' ';
     os << "]\n";
     cout << os.str();
 }

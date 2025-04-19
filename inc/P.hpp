@@ -22,7 +22,9 @@ class Object {
     Object();
     Object(string V);
     virtual ~Object();
-    virtual string dump() { return value; }
+    string tag();
+    virtual string val() { return value; }
+    string dump();
 };
 
 class Sym : public Object {
@@ -35,7 +37,7 @@ class Int : public Object {
 
    public:
     Int(string V);
-    string dump();
+    string val();
 };
 
 #define Dsz 0x10
