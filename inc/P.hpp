@@ -8,8 +8,13 @@
 
 using namespace std;
 
+/// @defgroup main main
+/// @{
+
 extern int main(int argc, char *argv[]);
 extern void arg(int argc, char *argv);
+
+/// @}
 
 /// @brief root object class
 /// @details common behaviour for any item in a system
@@ -29,11 +34,13 @@ class Object {
     string dump();
 };
 
+/// @brief symbol (function/variable name etc)
 class Sym : public Object {
    public:
     Sym(string V);
 };
 
+/// @brief integer number
 class Int : public Object {
     int value;
 
@@ -42,6 +49,7 @@ class Int : public Object {
     string val();
 };
 
+/// @brief VM command (`void function()` wrapper)
 class Cmd : public Object {
     void (*fn)();
 
