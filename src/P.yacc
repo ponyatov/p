@@ -2,13 +2,13 @@
     #include "P.hpp"
 %}
 
-%defines %union { int n; char c; char *s; }
+%defines %union { Object *o; }
 
-%token<n> INT
-%token<s> ID
+%token<o> INT
+%token<o> ID
 
 %%
 syntax: | syntax ex
 
-ex  : INT   { push($1); quest(); }
-    | ID    { fprintf(stderr, "id:%s\n",$1); }
+ex  : INT   { $1->dump(); push($1); quest(); }
+    | ID    { $1->dump();           quest(); }

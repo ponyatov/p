@@ -13,24 +13,52 @@ int main(int argc, char *argv[]) {  //
 }
 
 void arg(int argc, char *argv) {  //
-    fprintf(stderr, "arg[%i] = <%s>\n", argc, argv);
+    cerr << "arg[" << argc << "] = <" << argv << ">\n";
 }
 
 void yyerror(const char *msg) {
-    fprintf(stderr, "\n\n%s:%i %s [%s]\n\n", yyfile, yylineno, msg, yytext);
+    cerr << "\n\n" << yyfile << ':' << yylineno << ' ' << msg;
+    cerr << " [" << yytext << "]\n\n";
     exit(-1);
 }
 
-int D[Dsz];
+Object *Object::pool = nullptr;
+
+Object::Object() {
+    ref = 0;
+    next = pool;
+    pool = this;
+}
+
+Object::~Object() {}
+
+Object::Object(string V) : Object() { value = V; }
+
+Int::Int(string V) : Object() { value = atoi(V.c_str()); }
+string Int::dump() { return to_string(value); }
+
+Sym::Sym(string V) : Object(V) {}
+
+Object *D[Dsz];
 size_t Dp = 0;
 
-void push(int n) {
+void push(Object *o) {
     assert(Dp < Dsz);
-    D[Dp++] = n;
+    D[Dp++] = o;
+}
+
+Object *pop() {
+    assert(Dp > 0);
+    return D[--Dp];
 }
 
 void quest() {
+    ostringstream os;
+    os << "\n[ ";
     printf("\n[ ");
-    for (int i = 0; i < Dp; i++) printf("%i ", D[i]);
-    printf("]\n");
+    for (int i = 0; i < Dp; i++) printf("%s ", D[i]->dump().c_str());
+    os << "]\n";
+    cout << os.str();
 }
+
+map<string, Object *> W;

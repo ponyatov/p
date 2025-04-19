@@ -12,7 +12,7 @@ d [0-9]
 #[^\n]*     {}                  // line comment
 [ \t\r\n]+  {}                  // drop spaces
 
-{s}?{d}+    { yylval.n = atoi(yytext); return INT; }
-[^ \t\r\n]+ { yylval.s =      yytext;  return  ID; }
+{s}?{d}+    TOKEN(Int,INT)
+[^ \t\r\n]+ TOKEN(Sym,ID )
 
 .           { yyerror(""); }    // any undetected char

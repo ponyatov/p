@@ -6,7 +6,7 @@ H += $(wildcard inc/*.h*)
 CP += tmp/$(MODULE).yacc.cpp tmp/$(MODULE).lex.cpp
 HP += tmp/$(MODULE).yacc.hpp
 
-CFLAGS += -Iinc -Itmp
+CFLAGS += -Iinc -Itmp -std=c++17
 
 .PHONY: all run
 all: bin/$(MODULE) lib/$(MODULE).ini
