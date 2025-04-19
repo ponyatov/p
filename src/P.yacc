@@ -10,5 +10,5 @@
 %%
 syntax: | syntax ex
 
-ex  : INT   { fprintf(stderr,"int:%i\n",$1); }
+ex  : INT   { push($1); quest(); }
     | ID    { fprintf(stderr, "id:%s\n",$1); }

@@ -20,3 +20,17 @@ void yyerror(const char *msg) {
     fprintf(stderr, "\n\n%s:%i %s [%s]\n\n", yyfile, yylineno, msg, yytext);
     exit(-1);
 }
+
+int D[Dsz];
+size_t Dp = 0;
+
+void push(int n) {
+    assert(Dp < Dsz);
+    D[Dp++] = n;
+}
+
+void quest() {
+    printf("\n[ ");
+    for (int i = 0; i < Dp; i++) printf("%i ", D[i]);
+    printf("]\n");
+}
