@@ -74,4 +74,11 @@ void quest() {
     cout << os.str();
 }
 
-map<string, Object *> W;
+
+Cmd::Cmd(string V, void (*F)()) : Object(V) { fn = F; }
+
+void nop() {}
+
+void halt() { exit(0); }
+
+map<string, Object *> W = {{"nop", new Cmd("nop",nop)}};

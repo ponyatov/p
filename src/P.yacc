@@ -8,7 +8,9 @@
 %token<o> ID
 
 %%
-syntax: | syntax ex
+syntax: | syntax ex { quest(); }
 
-ex  : INT   { $1->dump(); push($1); quest(); }
-    | ID    { $1->dump();           quest(); }
+ex  : INT   { push($1); }
+    | ID    { Object *o = W[$1->val()];     // lookup
+              if (!o) yyerror("not found");
+              else    push(o);              }

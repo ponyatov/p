@@ -11,6 +11,8 @@ using namespace std;
 extern int main(int argc, char *argv[]);
 extern void arg(int argc, char *argv);
 
+/// @brief root object class
+/// @details common behaviour for any item in a system
 class Object {
     string value;
 
@@ -40,6 +42,13 @@ class Int : public Object {
     string val();
 };
 
+class Cmd : public Object {
+    void (*fn)();
+
+   public:
+    Cmd(string V, void (*F)());
+};
+
 #define Dsz 0x10
 extern Object *D[Dsz];  ///< data stack
 extern size_t Dp;       ///< data stack pointer
@@ -49,6 +58,9 @@ extern Object *pop();         ///< `( o -- )` pop from @ref D
 extern void quest();          ///< `( -- )` print @ref D
 
 extern map<string, Object *> W;  ///< vocabulary
+
+extern void nop();   ///< `( -- )` empty command
+extern void halt();  ///< `( -- )` halt system
 
 extern int yylex();
 extern int yylineno;
