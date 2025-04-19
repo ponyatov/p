@@ -30,6 +30,15 @@ Object::Object() {
     pool = this;
 }
 
+Object *Object::incref() {
+    ref++;
+    return this;
+}
+Object *Object::decref() {
+    ref--;
+    return this;
+}
+
 Object::~Object() {}
 
 Object::Object(string V) : Object() { value = V; }
@@ -48,6 +57,8 @@ string Object::dump() {
     return os.str();
 }
 
+void Object::exec() { push(this); }
+
 Int::Int(string V) : Object() { value = atoi(V.c_str()); }
 string Int::val() { return to_string(value); }
 
@@ -58,12 +69,12 @@ size_t Dp = 0;
 
 void push(Object *o) {
     assert(Dp < Dsz);
-    D[Dp++] = o;
+    D[Dp++] = o->incref();
 }
 
 Object *pop() {
     assert(Dp > 0);
-    return D[--Dp];
+    return D[--Dp]->decref();
 }
 
 void quest() {
@@ -74,11 +85,13 @@ void quest() {
     cout << os.str();
 }
 
-
 Cmd::Cmd(string V, void (*F)()) : Object(V) { fn = F; }
+void Cmd::exec() { fn(); }
 
 void nop() {}
 
 void halt() { exit(0); }
 
-map<string, Object *> W = {{"nop", new Cmd("nop",nop)}};
+map<string, Object *> W = {{"nop", new Cmd("nop", nop)},
+                           {"halt", new Cmd("halt", halt)},
+                           {"?", new Cmd("?", quest)}};
