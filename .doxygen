@@ -1,17 +1,19 @@
-PROJECT_NAME           = "protoShell"
-PROJECT_BRIEF          = "embedded) software prototyping"
+PROJECT_NAME           = "P"
+PROJECT_BRIEF          = "protoShell"
 PROJECT_LOGO           = doc/logo.png
-OUTPUT_DIRECTORY       = doc
-HTML_OUTPUT            = html
-INPUT                  = README.md doc lib inc src hw cpu arch os
+HTML_OUTPUT            = doc/html
+OUTPUT_DIRECTORY       =
+INPUT                  = README.md inc lib src doc hw os cpu arch
 INCLUDE_PATH           = inc
 EXCLUDE                = ref/* *.pdf *.djvu
+EXCLUDE               += hw/f4disco/Core hw/f4disco/Drivers
+EXCLUDE               += hw/l496disco/Core hw/l496disco/Drivers
 WARN_IF_UNDOCUMENTED   = NO
 RECURSIVE              = YES
 USE_MDFILE_AS_MAINPAGE = README.md
 GENERATE_LATEX         = NO
-FILE_PATTERNS         += *.lex *.yacc *.ragel *.rl
-EXTENSION_MAPPING      = lex=C++ yacc=C++ ragel=C++ rl=C++ ino=C++
+FILE_PATTERNS         += *.lex *.yacc
+EXTENSION_MAPPING      = lex=C++ yacc=C++ ino=C++
 HAVE_DOT               = YES
 EXTRACT_ALL            = YES
 EXTRACT_STATIC         = YES
@@ -25,3 +27,4 @@ SORT_GROUP_NAMES       = YES
 REPEAT_BRIEF           = NO
 CALL_GRAPH             = YES
 CALLER_GRAPH           = YES
+# DISABLE_INDEX          = YES

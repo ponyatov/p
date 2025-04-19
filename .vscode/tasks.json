@@ -28,6 +28,13 @@
             "problemMatcher" : []
         },
         {
+            "label"          : "doxy: gen",
+            "type"           : "shell",
+            "command"        : "make doxy",
+            "problemMatcher" : [],
+            "presentation"   : {"showReuseMessage": true, "focus": true},
+        },
+        {
             "label"          : "python: run",
             "type"           : "shell",
             "command"        : "python3 ${workspaceFolder}/src/${workspaceFolderBasename}.py ${workspaceFolder}/lib/${workspaceFolderBasename}.ini",

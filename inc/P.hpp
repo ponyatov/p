@@ -16,8 +16,12 @@ extern void arg(int argc, char *argv);
 
 /// @}
 
+/// @defgroup core core
+/// @brief EDS: Executable Data Sturucture (c)
+
 /// @brief root object class
 /// @details common behaviour for any item in a system
+/// @ingroup core
 class Object {
     string value;
 
@@ -35,12 +39,14 @@ class Object {
 };
 
 /// @brief symbol (function/variable name etc)
+/// @ingroup core
 class Sym : public Object {
    public:
     Sym(string V);
 };
 
 /// @brief integer number
+/// @ingroup core
 class Int : public Object {
     int value;
 
@@ -50,12 +56,17 @@ class Int : public Object {
 };
 
 /// @brief VM command (`void function()` wrapper)
+/// @ingroup core
 class Cmd : public Object {
     void (*fn)();
 
    public:
     Cmd(string V, void (*F)());
 };
+
+/// @defgroup vm vm
+/// @brief Virtual stack Machine
+/// @{
 
 #define Dsz 0x10
 extern Object *D[Dsz];  ///< data stack
@@ -67,8 +78,14 @@ extern void quest();          ///< `( -- )` print @ref D
 
 extern map<string, Object *> W;  ///< vocabulary
 
+/// @defgroup cmd cmd
+/// @brief VM commands
+
 extern void nop();   ///< `( -- )` empty command
 extern void halt();  ///< `( -- )` halt system
+
+/// @}
+/// @}
 
 extern int yylex();
 extern int yylineno;
